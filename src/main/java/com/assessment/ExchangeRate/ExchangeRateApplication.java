@@ -1,4 +1,4 @@
-package com.assessment.Exchange.Rate;
+package com.assessment.ExchangeRate;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
