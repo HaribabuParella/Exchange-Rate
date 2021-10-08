@@ -1,14 +1,14 @@
 package com.assessment.exchangeRate.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.assessment.exchangeRate.model.ExchangeRate;
 import com.assessment.exchangeRate.service.ExchangeRateService;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 
 @RestController
 public class ExchangeRateController {
@@ -16,21 +16,29 @@ public class ExchangeRateController {
 	@Autowired
 	ExchangeRateService exchangeRateService;
 	
-	@RequestMapping("/hello")
-	public String hello() {
-		return "Hello World";
-	}
-	
-	@GetMapping(value="/getExchangrRates")
-	private ExchangeRate getExchangeRates() throws JsonMappingException, JsonProcessingException {
-		/*
-		 * String url =
-		 * "http://api.exchangeratesapi.io/v1/latest?access_key=8bcc7821dd1cfbdf4cbae85e11ff220a";
-		 * RestTemplate rt = new RestTemplate(); ObjectMapper mapper = new
-		 * ObjectMapper(); String json = rt.getForObject(url, String.class);
-		 * ExchangeRate exchangeRate = mapper.reader()
-		 * .forType(ExchangeRate.class).readValue(json);
-		 */
+	@GetMapping(value="/getExchangRates")
+	private String getExchangeRates() throws JsonProcessingException {
 		return exchangeRateService.getExchangeRates();
 	}
+	
+	@GetMapping(value="/getExchangeRatesByDate/{date}")
+	private String getExchangeRatesByDate(@PathVariable("date") String date) throws JsonProcessingException {
+		return exchangeRateService.getExchangeRatesByDate(date);
+	}
+	
+	@GetMapping(value="/getExchangeRatesData")
+	private List<ExchangeRate> getExchangeRatesData() {
+		return exchangeRateService.getExchangeRatesData();
+	}
+	
+	@GetMapping(value="/getExchangeRatesInfoByDate/{date}")
+	private ExchangeRate getExchangeRatesInfoByDate(@PathVariable("date") String date) {
+		return exchangeRateService.getExchangeRatesInfoByDate(date);//2021-10-08
+	}
+	
+	@GetMapping(value="/getExchangeRatesInBwtDates/{fromDate}/{toDate}")
+	private List<ExchangeRate> getExchangeRatesInBwtDates(@PathVariable("fromDate") String fromDate,@PathVariable("toDate") String toDate) {
+		return exchangeRateService.getExchangeRatesInBwtDates(fromDate,toDate);//2021-10-08
+	}
+	
 }

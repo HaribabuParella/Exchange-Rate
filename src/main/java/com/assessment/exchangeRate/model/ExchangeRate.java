@@ -2,38 +2,38 @@ package com.assessment.exchangeRate.model;
 
 import java.util.Map;
 
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MapKeyColumn;
-import javax.persistence.MapKeyEnumerated;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Entity
-@Table
+@Table(name = "EXCHANGE_RATES", schema = "PUBLIC")
 public class ExchangeRate {
 	
-	@Id
-	@Column
-	@GeneratedValue 
-	private int id;
+	//@Id
+	//@Column
+	//@GeneratedValue 
+	//private int id;
 	
 	@Column
 	private String success;
 	@Column
 	private String timestamp;
+	@Id
 	@Column
 	private String base;
 	@Column
 	private String date;
 	@ElementCollection
 	@MapKeyColumn
-	@MapKeyEnumerated(EnumType.STRING)
+	@Column
+	@CollectionTable
 	@JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
 	private Map<String,Long> rates;
 	public String getSuccess() {
