@@ -20,36 +20,33 @@ public class ExchangeRateController {
 	@Autowired
 	ExchangeRateService exchangeRateService;
 	
-	@GetMapping(value="/getExchangRates")
-	private String getExchangeRates() throws JsonProcessingException {
+	@GetMapping(value="/getExchangRates/{accessKey}")
+	private String getExchangeRates(@PathVariable("accessKey") String accessKey) throws JsonProcessingException {
 		logger.info("ExchangeRateController : getExchangeRates Entry");
-		return exchangeRateService.getExchangeRates();
+		return exchangeRateService.getExchangeRates(accessKey);
 	}
 	
-	@GetMapping(value="/getExchangeRatesByDate/{date}")
-	private String getExchangeRatesByDate(@PathVariable("date") String date) throws JsonProcessingException {
-		logger.info("ExchangeRateController : getExchangeRatesByDate Entry");
-		logger.info("getExchangeRatesByDate input date: "+date);
-		return exchangeRateService.getExchangeRatesByDate(date);
+	@GetMapping(value="/getExchangeRatesByDate/{accessKey}/{date}")
+	private String getExchangeRatesByDate(@PathVariable("accessKey") String accessKey,@PathVariable("date") String date) throws JsonProcessingException {
+		logger.info("ExchangeRateController : getExchangeRatesByDate Entry ");
+		return exchangeRateService.getExchangeRatesByDate(accessKey,date);
 	}
 	
-	@GetMapping(value="/getExchangeRatesData")
-	private List<ExchangeRate> getExchangeRatesData() {
+	@GetMapping(value="/getExchangeRatesData/{accessKey}")
+	private String getExchangeRatesData(@PathVariable("accessKey") String accessKey) throws JsonProcessingException {
 		logger.info("ExchangeRateController : getExchangeRatesData Entry");
-		return exchangeRateService.getExchangeRatesData();
+		return exchangeRateService.getExchangeRatesData(accessKey);
 	}
 	
 	@GetMapping(value="/getExchangeRatesInfoByDate/{date}")
-	private ExchangeRate getExchangeRatesInfoByDate(@PathVariable("date") String date) {
-		logger.info("ExchangeRateController : getExchangeRatesInfoByDate Entry");
-		logger.info("getExchangeRatesInfoByDate input date: "+date);
+	private Object getExchangeRatesInfoByDate(@PathVariable("date") String date) {
+		logger.info("ExchangeRateController : getExchangeRatesInfoByDate Entry ");
 		return exchangeRateService.getExchangeRatesInfoByDate(date);//2021-10-08
 	}
 	
 	@GetMapping(value="/getExchangeRatesInBwtDates/{fromDate}/{toDate}")
 	private List<ExchangeRate> getExchangeRatesInBwtDates(@PathVariable("fromDate") String fromDate,@PathVariable("toDate") String toDate) {
 		logger.info("ExchangeRateController : getExchangeRatesInBwtDates Entry");
-		logger.info("getExchangeRatesInBwtDates Input fromdate "+fromDate+" todate "+toDate);
 		return exchangeRateService.getExchangeRatesInBwtDates(fromDate,toDate);//2021-10-08
 	}
 	
