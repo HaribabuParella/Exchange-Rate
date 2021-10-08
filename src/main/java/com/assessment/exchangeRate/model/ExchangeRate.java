@@ -15,19 +15,15 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 @Entity
 @Table(name = "EXCHANGE_RATES", schema = "PUBLIC")
 public class ExchangeRate {
-	
-	//@Id
-	//@Column
-	//@GeneratedValue 
-	//private int id;
-	
 	@Column
 	private String success;
 	@Column
 	private String timestamp;
-	@Id
+	@Column
+	private String historical;
 	@Column
 	private String base;
+	@Id
 	@Column
 	private String date;
 	@ElementCollection
@@ -35,7 +31,7 @@ public class ExchangeRate {
 	@Column
 	@CollectionTable
 	@JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY)
-	private Map<String,Long> rates;
+	private Map<String,Double> rates;
 	public String getSuccess() {
 		return success;
 	}
@@ -47,6 +43,12 @@ public class ExchangeRate {
 	}
 	public void setTimestamp(String timestamp) {
 		this.timestamp = timestamp;
+	}
+	public String getHistorical() {
+		return historical;
+	}
+	public void setHistorical(String historical) {
+		this.historical = historical;
 	}
 	public String getBase() {
 		return base;
@@ -60,10 +62,10 @@ public class ExchangeRate {
 	public void setDate(String date) {
 		this.date = date;
 	}
-	public Map<String, Long> getRates() {
+	public Map<String, Double> getRates() {
 		return rates;
 	}
-	public void setRates(Map<String, Long> rates) {
+	public void setRates(Map<String, Double> rates) {
 		this.rates = rates;
 	}
 	@Override
