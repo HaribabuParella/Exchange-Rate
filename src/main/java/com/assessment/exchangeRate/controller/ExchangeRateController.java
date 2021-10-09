@@ -45,7 +45,7 @@ public class ExchangeRateController {
 	}
 	
 	@GetMapping(value="/getExchangeRatesInBwtDates/{fromDate}/{toDate}")
-	private List<ExchangeRate> getExchangeRatesInBwtDates(@PathVariable("fromDate") String fromDate,@PathVariable("toDate") String toDate) {
+	private List<Object> getExchangeRatesInBwtDates(@PathVariable("fromDate") String fromDate,@PathVariable("toDate") String toDate) {
 		logger.info("ExchangeRateController : getExchangeRatesInBwtDates Entry");
 		return exchangeRateService.getExchangeRatesInBwtDates(fromDate,toDate);//2021-10-08
 	}

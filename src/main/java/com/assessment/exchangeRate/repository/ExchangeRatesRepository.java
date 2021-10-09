@@ -13,5 +13,5 @@ import com.assessment.exchangeRate.model.ExchangeRate;
 public interface ExchangeRatesRepository extends JpaRepository<ExchangeRate, Integer>{
 	 ExchangeRate findByDate(@Param("date") String date);
 	 
-	 List<ExchangeRate> findAllByDateBetween(String fromDate,String toDate);
+	 List<Object> findAllByDateBetween(String fromDate,String toDate);
 }

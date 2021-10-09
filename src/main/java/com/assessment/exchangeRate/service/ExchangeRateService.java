@@ -14,7 +14,6 @@ import com.assessment.exchangeRate.model.ExchangeRate;
 import com.assessment.exchangeRate.repository.ExchangeRatesRepository;
 import com.assessment.exchangeRate.utility.ExchangeRatesUtility;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
@@ -72,26 +71,54 @@ public class ExchangeRateService {
 	
 	public Object getExchangeRatesInfoByDate(String date) {
 		logger.info("ExchangeRateService : getExchangeRatesInfoByDate");
-		ExchangeRate exchangeRate = new ExchangeRate();
-		Object obj = new Object();
+		Object resultObject = null;
 		boolean result = ExchangeRatesUtility.isDateValid(date, EchangeRatesConstants.DATE_FORMATE);
-		if(result) {
-			exchangeRate = exchangeRatesRepository.findByDate(date);
-			obj = exchangeRate;
-		}else {
-			String error ="Invalid Dateformate from user !!";
-			obj=error;
+		if (result) {
+			ExchangeRate exchangeRate = exchangeRatesRepository.findByDate(date);
+			if (exchangeRate !=null && !exchangeRate.getDate().isEmpty()) {
+				resultObject = exchangeRate;
+			} else {
+				String error = "No Exchange Rate data found for this Date !!";
+				resultObject = error;
+			}
+		} else {
+			String error = "Invalid Dateformate from user !!";
+			resultObject = error;
 		}
-		return obj;
+		return resultObject;
 	}
 
-	public List<ExchangeRate> getExchangeRatesInBwtDates(String fromDate, String toDate) {
+	public List<Object> getExchangeRatesInBwtDates(String fromDate, String toDate) {
 		logger.info("ExchangeRateService : getExchangeRatesInfoByDate");
-		List<ExchangeRate> exchangeRatesList = exchangeRatesRepository.findAllByDateBetween(fromDate, toDate);
-		String todayDate = ExchangeRatesUtility.getTodayDate();
-		logger.info(" getExchangeRatesInBwtDates todatDate"+todayDate);
-		ExchangeRate exchangeRate= exchangeRatesRepository.findByDate(todayDate);
-		exchangeRatesList.add(exchangeRate);
+		boolean result = ExchangeRatesUtility.isDateValid(fromDate, EchangeRatesConstants.DATE_FORMATE);
+		boolean result1 = ExchangeRatesUtility.isDateValid(toDate, EchangeRatesConstants.DATE_FORMATE);
+		List<Object> exchangeRatesList = new ArrayList<>();
+		if(result&&result1){
+			exchangeRatesList = exchangeRatesRepository.findAllByDateBetween(fromDate, toDate);
+			String todayDate = ExchangeRatesUtility.getTodayDate();
+			logger.info(" getExchangeRatesInBwtDates todatDate"+todayDate);
+			ExchangeRate exchangeRate= exchangeRatesRepository.findByDate(todayDate);
+			if(!exchangeRatesList.isEmpty()) {
+				if(exchangeRate!= null && !exchangeRate.getDate().isEmpty()) {
+					exchangeRatesList.add(exchangeRate);
+				}
+				else {
+					exchangeRatesList.add("No Exchange Rate data found for today Date !!");
+				}
+			}else {
+				if(exchangeRate!= null && !exchangeRate.getDate().isEmpty()) {
+					exchangeRatesList.add(exchangeRate);
+					exchangeRatesList.add("No Exchange Rate data found for in b/w Dates !!");
+				}
+				else {
+					exchangeRatesList.add("No Exchange Rate data found in b/w Dates and Today date !!");
+				}
+			}
+			
+		}else {
+			String error = "Invalid Dateformate from user !!";
+			exchangeRatesList.add(error);
+		}
 		return exchangeRatesList;
 	}
 
