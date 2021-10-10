@@ -7,8 +7,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
+import com.assessment.exchangeRate.Exceptions.CustomException;
+import com.assessment.exchangeRate.Exceptions.UnauthorizedException;
 import com.assessment.exchangeRate.constants.EchangeRatesConstants;
 import com.assessment.exchangeRate.model.ExchangeRate;
 import com.assessment.exchangeRate.repository.ExchangeRatesRepository;
@@ -38,11 +42,11 @@ public class ExchangeRateServiceImpl implements ExchangeRateService {
 	public String getExchangeRatesByDate(String accessKey, String date) throws JsonProcessingException {
 		logger.info("ExchangeRateService : getExchangeRatesByDate");
 		boolean result = ExchangeRatesUtility.isDateValid(date, EchangeRatesConstants.DATE_FORMATE);
+		try {
 		if (result) {
 			String url = EchangeRatesConstants.BASE_URL + date + EchangeRatesConstants.ACCESS_KEY
 					+ accessKey + EchangeRatesConstants.BASE
 					+ EchangeRatesConstants.SYMBOL;
-			logger.info("getExchangeRatesByDate : " + url);
 			RestTemplate rt = new RestTemplate();
 			ObjectMapper mapper = new ObjectMapper();
 			String json = rt.getForObject(url, String.class);
@@ -55,6 +59,15 @@ public class ExchangeRateServiceImpl implements ExchangeRateService {
 			else {
 				return "Data not recived from Echange API !!";
 			}
+		}
+		}catch(JsonProcessingException jpe) {
+			throw new CustomException("Unwanted data response from API call");
+		}catch(HttpClientErrorException hce) {
+			throw new UnauthorizedException("You have supplied a Invalid API Access Key.");
+		}catch(ResourceAccessException rae) {
+			throw new CustomException("Intrnal Server is unavilable");
+		}catch(Exception e) {
+			throw new CustomException("Somthing went wrong can you try after sometime");
 		}
 		return "Invalid Dateformate from user !!";
 	}

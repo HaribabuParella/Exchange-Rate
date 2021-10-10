@@ -11,12 +11,15 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
 
+import com.assessment.exchangeRate.Exceptions.CustomException;
+import com.assessment.exchangeRate.Exceptions.UnauthorizedException;
 import com.assessment.exchangeRate.constants.EchangeRatesConstants;
 import com.assessment.exchangeRate.model.ExchangeRate;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class ExchangeRatesUtility {
@@ -48,6 +51,7 @@ public class ExchangeRatesUtility {
 		return false;
 	}
 
+	@SuppressWarnings("unlikely-arg-type")
 	public static List<ExchangeRate> filterExchangeRateListData(List<ExchangeRate> exchangeRateList) {
 		logger.info("ExchangeRatesUtility : filterExchangeRateListData");
 		List<ExchangeRate> exchangeRateList1 = exchangeRateList.stream()
@@ -60,153 +64,157 @@ public class ExchangeRatesUtility {
 
 	public static List<ExchangeRate> getExchangeDataFromAPI(String accessKey) throws JsonProcessingException {
 		logger.info("getExchangeDatFromAPI");
-		RestTemplate rt = new RestTemplate();
-		ObjectMapper mapper = new ObjectMapper();
 		List<ExchangeRate> exchangeRateList = new ArrayList<>();
-		String json = rt.getForObject(EchangeRatesConstants.URL2+EchangeRatesConstants.ACCESS_KEY+accessKey+
-				  EchangeRatesConstants.BASE+EchangeRatesConstants.CURRENCY_SYMBOL, String.class);
-		ExchangeRate exchangeRate = mapper.reader().forType(ExchangeRate.class).readValue(json);
-		exchangeRateList.add(exchangeRate);
-	
-		  String json1 = rt.getForObject(EchangeRatesConstants.URL3+EchangeRatesConstants.ACCESS_KEY+accessKey+
-				  EchangeRatesConstants.BASE+EchangeRatesConstants.CURRENCY_SYMBOL, String.class);
-		  ExchangeRate exchangeRate1 =
-		  mapper.reader().forType(ExchangeRate.class).readValue(json1);
-		  exchangeRateList.add(exchangeRate1);
-		  
-		  String json2 = rt.getForObject(EchangeRatesConstants.URL4+EchangeRatesConstants.ACCESS_KEY+accessKey+
-				  EchangeRatesConstants.BASE+EchangeRatesConstants.CURRENCY_SYMBOL, String.class);
-		  ExchangeRate exchangeRate2 =
-		  mapper.reader().forType(ExchangeRate.class).readValue(json2);
-		  exchangeRateList.add(exchangeRate2);
-		  
-		  String json3 = rt.getForObject(EchangeRatesConstants.URL5+EchangeRatesConstants.ACCESS_KEY+accessKey+
-				  EchangeRatesConstants.BASE+EchangeRatesConstants.CURRENCY_SYMBOL, String.class);
-		  ExchangeRate exchangeRate3 =
-		  mapper.reader().forType(ExchangeRate.class).readValue(json3);
-		  exchangeRateList.add(exchangeRate3);
-		 
-		  String json4 = rt.getForObject(EchangeRatesConstants.URL6+EchangeRatesConstants.ACCESS_KEY+accessKey+
-				  EchangeRatesConstants.BASE+EchangeRatesConstants.CURRENCY_SYMBOL, String.class);
-		  ExchangeRate exchangeRate4 =
-		  mapper.reader().forType(ExchangeRate.class).readValue(json4);
-		  exchangeRateList.add(exchangeRate4);
-		  
-		  String json5 = rt.getForObject(EchangeRatesConstants.URL7+EchangeRatesConstants.ACCESS_KEY+accessKey+
-				  EchangeRatesConstants.BASE+EchangeRatesConstants.CURRENCY_SYMBOL, String.class);
-		  ExchangeRate exchangeRate5 =
-		  mapper.reader().forType(ExchangeRate.class).readValue(json5);
-		  
-		  String json6 = rt.getForObject(EchangeRatesConstants.URL8+EchangeRatesConstants.ACCESS_KEY+accessKey+
-				  EchangeRatesConstants.BASE+EchangeRatesConstants.CURRENCY_SYMBOL, String.class);
-		  ExchangeRate exchangeRate6 =
-		  mapper.reader().forType(ExchangeRate.class).readValue(json6);
-		  
-		  String json7 = rt.getForObject(EchangeRatesConstants.URL9+EchangeRatesConstants.ACCESS_KEY+accessKey+
-				  EchangeRatesConstants.BASE+EchangeRatesConstants.CURRENCY_SYMBOL, String.class);
-		  ExchangeRate exchangeRate7 =
-		  mapper.reader().forType(ExchangeRate.class).readValue(json7);
-		 
-		  String json8 = rt.getForObject(EchangeRatesConstants.URL10+EchangeRatesConstants.ACCESS_KEY+accessKey+
-				  EchangeRatesConstants.BASE+EchangeRatesConstants.CURRENCY_SYMBOL, String.class);
-		  ExchangeRate exchangeRate8 =
-		  mapper.reader().forType(ExchangeRate.class).readValue(json8);
-		  
-		  String json9 = rt.getForObject(EchangeRatesConstants.URL11+EchangeRatesConstants.ACCESS_KEY+accessKey+
-				  EchangeRatesConstants.BASE+EchangeRatesConstants.CURRENCY_SYMBOL, String.class);
-		  ExchangeRate exchangeRate9 =
-		  mapper.reader().forType(ExchangeRate.class).readValue(json9);
-		  
-		  String json10 = rt.getForObject(EchangeRatesConstants.URL12+EchangeRatesConstants.ACCESS_KEY+accessKey+
-				  EchangeRatesConstants.BASE+EchangeRatesConstants.CURRENCY_SYMBOL, String.class);
-		  ExchangeRate exchangeRate10 =
-		  mapper.reader().forType(ExchangeRate.class).readValue(json10);
-		  
-		  String json11 = rt.getForObject(EchangeRatesConstants.URL+EchangeRatesConstants.ACCESS_KEY+accessKey+
-				  EchangeRatesConstants.BASE+EchangeRatesConstants.CURRENCY_SYMBOL, String.class);
-		  ExchangeRate exchangeRate11 =
-		  mapper.reader().forType(ExchangeRate.class).readValue(json11);
-		
-		exchangeRateList.add(exchangeRate5); exchangeRateList.add(exchangeRate6);
-		exchangeRateList.add(exchangeRate7); exchangeRateList.add(exchangeRate8);
-		exchangeRateList.add(exchangeRate9); exchangeRateList.add(exchangeRate10);
-		exchangeRateList.add(exchangeRate11);
+		try {
+			RestTemplate rt = new RestTemplate();
+			ObjectMapper mapper = new ObjectMapper();
+			String json = rt.getForObject(EchangeRatesConstants.URL2 + EchangeRatesConstants.ACCESS_KEY + accessKey
+					+ EchangeRatesConstants.BASE + EchangeRatesConstants.CURRENCY_SYMBOL, String.class);
+			ExchangeRate exchangeRate = mapper.reader().forType(ExchangeRate.class).readValue(json);
+			exchangeRateList.add(exchangeRate);
+
+			String json1 = rt.getForObject(EchangeRatesConstants.URL3 + EchangeRatesConstants.ACCESS_KEY + accessKey
+					+ EchangeRatesConstants.BASE + EchangeRatesConstants.CURRENCY_SYMBOL, String.class);
+			ExchangeRate exchangeRate1 = mapper.reader().forType(ExchangeRate.class).readValue(json1);
+			exchangeRateList.add(exchangeRate1);
+
+			String json2 = rt.getForObject(EchangeRatesConstants.URL4 + EchangeRatesConstants.ACCESS_KEY + accessKey
+					+ EchangeRatesConstants.BASE + EchangeRatesConstants.CURRENCY_SYMBOL, String.class);
+			ExchangeRate exchangeRate2 = mapper.reader().forType(ExchangeRate.class).readValue(json2);
+			exchangeRateList.add(exchangeRate2);
+
+			String json3 = rt.getForObject(EchangeRatesConstants.URL5 + EchangeRatesConstants.ACCESS_KEY + accessKey
+					+ EchangeRatesConstants.BASE + EchangeRatesConstants.CURRENCY_SYMBOL, String.class);
+			ExchangeRate exchangeRate3 = mapper.reader().forType(ExchangeRate.class).readValue(json3);
+			exchangeRateList.add(exchangeRate3);
+
+			String json4 = rt.getForObject(EchangeRatesConstants.URL6 + EchangeRatesConstants.ACCESS_KEY + accessKey
+					+ EchangeRatesConstants.BASE + EchangeRatesConstants.CURRENCY_SYMBOL, String.class);
+			ExchangeRate exchangeRate4 = mapper.reader().forType(ExchangeRate.class).readValue(json4);
+			exchangeRateList.add(exchangeRate4);
+
+			String json5 = rt.getForObject(EchangeRatesConstants.URL7 + EchangeRatesConstants.ACCESS_KEY + accessKey
+					+ EchangeRatesConstants.BASE + EchangeRatesConstants.CURRENCY_SYMBOL, String.class);
+			ExchangeRate exchangeRate5 = mapper.reader().forType(ExchangeRate.class).readValue(json5);
+
+			String json6 = rt.getForObject(EchangeRatesConstants.URL8 + EchangeRatesConstants.ACCESS_KEY + accessKey
+					+ EchangeRatesConstants.BASE + EchangeRatesConstants.CURRENCY_SYMBOL, String.class);
+			ExchangeRate exchangeRate6 = mapper.reader().forType(ExchangeRate.class).readValue(json6);
+
+			String json7 = rt.getForObject(EchangeRatesConstants.URL9 + EchangeRatesConstants.ACCESS_KEY + accessKey
+					+ EchangeRatesConstants.BASE + EchangeRatesConstants.CURRENCY_SYMBOL, String.class);
+			ExchangeRate exchangeRate7 = mapper.reader().forType(ExchangeRate.class).readValue(json7);
+
+			String json8 = rt.getForObject(EchangeRatesConstants.URL10 + EchangeRatesConstants.ACCESS_KEY + accessKey
+					+ EchangeRatesConstants.BASE + EchangeRatesConstants.CURRENCY_SYMBOL, String.class);
+			ExchangeRate exchangeRate8 = mapper.reader().forType(ExchangeRate.class).readValue(json8);
+
+			String json9 = rt.getForObject(EchangeRatesConstants.URL11 + EchangeRatesConstants.ACCESS_KEY + accessKey
+					+ EchangeRatesConstants.BASE + EchangeRatesConstants.CURRENCY_SYMBOL, String.class);
+			ExchangeRate exchangeRate9 = mapper.reader().forType(ExchangeRate.class).readValue(json9);
+
+			String json10 = rt.getForObject(EchangeRatesConstants.URL12 + EchangeRatesConstants.ACCESS_KEY + accessKey
+					+ EchangeRatesConstants.BASE + EchangeRatesConstants.CURRENCY_SYMBOL, String.class);
+			ExchangeRate exchangeRate10 = mapper.reader().forType(ExchangeRate.class).readValue(json10);
+
+			String json11 = rt.getForObject(EchangeRatesConstants.URL + EchangeRatesConstants.ACCESS_KEY + accessKey
+					+ EchangeRatesConstants.BASE + EchangeRatesConstants.CURRENCY_SYMBOL, String.class);
+			ExchangeRate exchangeRate11 = mapper.reader().forType(ExchangeRate.class).readValue(json11);
+
+			exchangeRateList.add(exchangeRate5);
+			exchangeRateList.add(exchangeRate6);
+			exchangeRateList.add(exchangeRate7);
+			exchangeRateList.add(exchangeRate8);
+			exchangeRateList.add(exchangeRate9);
+			exchangeRateList.add(exchangeRate10);
+			exchangeRateList.add(exchangeRate11);
+		} catch (JsonProcessingException jpe) {
+			throw new CustomException("Unwanted data response from API call");
+		} catch (HttpClientErrorException hce) {
+			throw new UnauthorizedException("You have supplied a Invalid API Access Key.");
+		} catch (ResourceAccessException rae) {
+			throw new CustomException("Intrnal Server is unavilable");
+		} catch (Exception e) {
+			throw new CustomException("Somthing went wrong can you try after sometime");
+		}
 		return exchangeRateList;
 	}
 
-	public static List<ExchangeRate> getExchangeRatesDataFromAPI(String accessKey) throws JsonMappingException, JsonProcessingException {
+	public static List<ExchangeRate> getExchangeRatesDataFromAPI(String accessKey) throws JsonProcessingException {
 		logger.info("getExchangeDatFromAPI");
-		RestTemplate rt = new RestTemplate();
-		ObjectMapper mapper = new ObjectMapper();
 		List<ExchangeRate> exchangeRateList = new ArrayList<>();
-		String json = rt.getForObject(EchangeRatesConstants.URL2+EchangeRatesConstants.ACCESS_KEY+accessKey+
-				  EchangeRatesConstants.BASE, String.class);
-		ExchangeRate exchangeRate = mapper.reader().forType(ExchangeRate.class).readValue(json);
-		exchangeRateList.add(exchangeRate);
-	
-		  String json1 = rt.getForObject(EchangeRatesConstants.URL3+EchangeRatesConstants.ACCESS_KEY+accessKey+
-				  EchangeRatesConstants.BASE, String.class);
-		  ExchangeRate exchangeRate1 =
-		  mapper.reader().forType(ExchangeRate.class).readValue(json1);
-		  exchangeRateList.add(exchangeRate1);
-		  
-		  String json2 = rt.getForObject(EchangeRatesConstants.URL4+EchangeRatesConstants.ACCESS_KEY+accessKey+
-				  EchangeRatesConstants.BASE, String.class);
-		  ExchangeRate exchangeRate2 =
-		  mapper.reader().forType(ExchangeRate.class).readValue(json2);
-		  exchangeRateList.add(exchangeRate2);
-		  
-		  String json3 = rt.getForObject(EchangeRatesConstants.URL5+EchangeRatesConstants.ACCESS_KEY+accessKey+
-				  EchangeRatesConstants.BASE, String.class);
-		  ExchangeRate exchangeRate3 =
-		  mapper.reader().forType(ExchangeRate.class).readValue(json3);
-		  exchangeRateList.add(exchangeRate3);
-		 
-		  String json4 = rt.getForObject(EchangeRatesConstants.URL6+EchangeRatesConstants.ACCESS_KEY+accessKey+
-				  EchangeRatesConstants.BASE, String.class);
-		  ExchangeRate exchangeRate4 =
-		  mapper.reader().forType(ExchangeRate.class).readValue(json4);
-		  exchangeRateList.add(exchangeRate4);
-		  
-		  String json5 = rt.getForObject(EchangeRatesConstants.URL7+EchangeRatesConstants.ACCESS_KEY+accessKey+
-				  EchangeRatesConstants.BASE, String.class);
-		  ExchangeRate exchangeRate5 =
-		  mapper.reader().forType(ExchangeRate.class).readValue(json5);
-		  
-		  String json6 = rt.getForObject(EchangeRatesConstants.URL8+EchangeRatesConstants.ACCESS_KEY+accessKey+
-				  EchangeRatesConstants.BASE+EchangeRatesConstants.CURRENCY_SYMBOL, String.class);
-		  ExchangeRate exchangeRate6 =
-		  mapper.reader().forType(ExchangeRate.class).readValue(json6);
-		  
-		  String json7 = rt.getForObject(EchangeRatesConstants.URL9+EchangeRatesConstants.ACCESS_KEY+accessKey+
-				  EchangeRatesConstants.BASE, String.class);
-		  ExchangeRate exchangeRate7 =
-		  mapper.reader().forType(ExchangeRate.class).readValue(json7);
-		 
-		  String json8 = rt.getForObject(EchangeRatesConstants.URL10+EchangeRatesConstants.ACCESS_KEY+accessKey+
-				  EchangeRatesConstants.BASE, String.class);
-		  ExchangeRate exchangeRate8 =
-		  mapper.reader().forType(ExchangeRate.class).readValue(json8);
-		  
-		  String json9 = rt.getForObject(EchangeRatesConstants.URL11+EchangeRatesConstants.ACCESS_KEY+accessKey+
-				  EchangeRatesConstants.BASE, String.class);
-		  ExchangeRate exchangeRate9 =
-		  mapper.reader().forType(ExchangeRate.class).readValue(json9);
-		  
-		  String json10 = rt.getForObject(EchangeRatesConstants.URL12+EchangeRatesConstants.ACCESS_KEY+accessKey+
-				  EchangeRatesConstants.BASE, String.class);
-		  ExchangeRate exchangeRate10 =
-		  mapper.reader().forType(ExchangeRate.class).readValue(json10);
-		  
-		  String json11 = rt.getForObject(EchangeRatesConstants.URL+EchangeRatesConstants.ACCESS_KEY+accessKey+
-				  EchangeRatesConstants.BASE, String.class);
-		  ExchangeRate exchangeRate11 =
-		  mapper.reader().forType(ExchangeRate.class).readValue(json11);
-		
-		exchangeRateList.add(exchangeRate5); exchangeRateList.add(exchangeRate6);
-		exchangeRateList.add(exchangeRate7); exchangeRateList.add(exchangeRate8);
-		exchangeRateList.add(exchangeRate9); exchangeRateList.add(exchangeRate10);
-		exchangeRateList.add(exchangeRate11);
+		try {
+			RestTemplate rt = new RestTemplate();
+			ObjectMapper mapper = new ObjectMapper();
+			String json = rt.getForObject(EchangeRatesConstants.URL2 + EchangeRatesConstants.ACCESS_KEY + accessKey
+					+ EchangeRatesConstants.BASE, String.class);
+			ExchangeRate exchangeRate = mapper.reader().forType(ExchangeRate.class).readValue(json);
+			exchangeRateList.add(exchangeRate);
+
+			String json1 = rt.getForObject(EchangeRatesConstants.URL3 + EchangeRatesConstants.ACCESS_KEY + accessKey
+					+ EchangeRatesConstants.BASE, String.class);
+			ExchangeRate exchangeRate1 = mapper.reader().forType(ExchangeRate.class).readValue(json1);
+			exchangeRateList.add(exchangeRate1);
+
+			String json2 = rt.getForObject(EchangeRatesConstants.URL4 + EchangeRatesConstants.ACCESS_KEY + accessKey
+					+ EchangeRatesConstants.BASE, String.class);
+			ExchangeRate exchangeRate2 = mapper.reader().forType(ExchangeRate.class).readValue(json2);
+			exchangeRateList.add(exchangeRate2);
+
+			String json3 = rt.getForObject(EchangeRatesConstants.URL5 + EchangeRatesConstants.ACCESS_KEY + accessKey
+					+ EchangeRatesConstants.BASE, String.class);
+			ExchangeRate exchangeRate3 = mapper.reader().forType(ExchangeRate.class).readValue(json3);
+			exchangeRateList.add(exchangeRate3);
+
+			String json4 = rt.getForObject(EchangeRatesConstants.URL6 + EchangeRatesConstants.ACCESS_KEY + accessKey
+					+ EchangeRatesConstants.BASE, String.class);
+			ExchangeRate exchangeRate4 = mapper.reader().forType(ExchangeRate.class).readValue(json4);
+			exchangeRateList.add(exchangeRate4);
+
+			String json5 = rt.getForObject(EchangeRatesConstants.URL7 + EchangeRatesConstants.ACCESS_KEY + accessKey
+					+ EchangeRatesConstants.BASE, String.class);
+			ExchangeRate exchangeRate5 = mapper.reader().forType(ExchangeRate.class).readValue(json5);
+
+			String json6 = rt.getForObject(EchangeRatesConstants.URL8 + EchangeRatesConstants.ACCESS_KEY + accessKey
+					+ EchangeRatesConstants.BASE + EchangeRatesConstants.CURRENCY_SYMBOL, String.class);
+			ExchangeRate exchangeRate6 = mapper.reader().forType(ExchangeRate.class).readValue(json6);
+
+			String json7 = rt.getForObject(EchangeRatesConstants.URL9 + EchangeRatesConstants.ACCESS_KEY + accessKey
+					+ EchangeRatesConstants.BASE, String.class);
+			ExchangeRate exchangeRate7 = mapper.reader().forType(ExchangeRate.class).readValue(json7);
+
+			String json8 = rt.getForObject(EchangeRatesConstants.URL10 + EchangeRatesConstants.ACCESS_KEY + accessKey
+					+ EchangeRatesConstants.BASE, String.class);
+			ExchangeRate exchangeRate8 = mapper.reader().forType(ExchangeRate.class).readValue(json8);
+
+			String json9 = rt.getForObject(EchangeRatesConstants.URL11 + EchangeRatesConstants.ACCESS_KEY + accessKey
+					+ EchangeRatesConstants.BASE, String.class);
+			ExchangeRate exchangeRate9 = mapper.reader().forType(ExchangeRate.class).readValue(json9);
+
+			String json10 = rt.getForObject(EchangeRatesConstants.URL12 + EchangeRatesConstants.ACCESS_KEY + accessKey
+					+ EchangeRatesConstants.BASE, String.class);
+			ExchangeRate exchangeRate10 = mapper.reader().forType(ExchangeRate.class).readValue(json10);
+
+			String json11 = rt.getForObject(EchangeRatesConstants.URL + EchangeRatesConstants.ACCESS_KEY + accessKey
+					+ EchangeRatesConstants.BASE, String.class);
+			ExchangeRate exchangeRate11 = mapper.reader().forType(ExchangeRate.class).readValue(json11);
+
+			exchangeRateList.add(exchangeRate5);
+			exchangeRateList.add(exchangeRate6);
+			exchangeRateList.add(exchangeRate7);
+			exchangeRateList.add(exchangeRate8);
+			exchangeRateList.add(exchangeRate9);
+			exchangeRateList.add(exchangeRate10);
+			exchangeRateList.add(exchangeRate11);
+		} catch (JsonProcessingException jpe) {
+			throw new CustomException("Unwanted data response from API call");
+		} catch (HttpClientErrorException hce) {
+			throw new UnauthorizedException("You have supplied a Invalid API Access Key.");
+		} catch (ResourceAccessException rae) {
+			throw new CustomException("Intrnal Server is unavilable");
+		} catch (Exception e) {
+			throw new CustomException("Somthing went wrong can you try after sometime");
+		}
 		return exchangeRateList;
 	}
 }
