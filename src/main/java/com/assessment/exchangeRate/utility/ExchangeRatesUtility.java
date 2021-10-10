@@ -92,7 +92,6 @@ public class ExchangeRatesUtility {
 		  mapper.reader().forType(ExchangeRate.class).readValue(json4);
 		  exchangeRateList.add(exchangeRate4);
 		  
-		  
 		  String json5 = rt.getForObject(EchangeRatesConstants.URL7+EchangeRatesConstants.ACCESS_KEY+accessKey+
 				  EchangeRatesConstants.BASE+EchangeRatesConstants.CURRENCY_SYMBOL, String.class);
 		  ExchangeRate exchangeRate5 =
@@ -128,7 +127,6 @@ public class ExchangeRatesUtility {
 		  ExchangeRate exchangeRate11 =
 		  mapper.reader().forType(ExchangeRate.class).readValue(json11);
 		
-		 
 		exchangeRateList.add(exchangeRate5); exchangeRateList.add(exchangeRate6);
 		exchangeRateList.add(exchangeRate7); exchangeRateList.add(exchangeRate8);
 		exchangeRateList.add(exchangeRate9); exchangeRateList.add(exchangeRate10);
@@ -170,7 +168,6 @@ public class ExchangeRatesUtility {
 		  mapper.reader().forType(ExchangeRate.class).readValue(json4);
 		  exchangeRateList.add(exchangeRate4);
 		  
-		  
 		  String json5 = rt.getForObject(EchangeRatesConstants.URL7+EchangeRatesConstants.ACCESS_KEY+accessKey+
 				  EchangeRatesConstants.BASE, String.class);
 		  ExchangeRate exchangeRate5 =
@@ -206,7 +203,6 @@ public class ExchangeRatesUtility {
 		  ExchangeRate exchangeRate11 =
 		  mapper.reader().forType(ExchangeRate.class).readValue(json11);
 		
-		 
 		exchangeRateList.add(exchangeRate5); exchangeRateList.add(exchangeRate6);
 		exchangeRateList.add(exchangeRate7); exchangeRateList.add(exchangeRate8);
 		exchangeRateList.add(exchangeRate9); exchangeRateList.add(exchangeRate10);
