@@ -13,7 +13,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.assessment.exchangeRate.Exceptions.CustomException;
 import com.assessment.exchangeRate.Exceptions.UnauthorizedException;
-import com.assessment.exchangeRate.constants.EchangeRatesConstants;
+import com.assessment.exchangeRate.constants.ExchangeRatesConstants;
 import com.assessment.exchangeRate.model.ExchangeRate;
 import com.assessment.exchangeRate.repository.ExchangeRatesRepository;
 import com.assessment.exchangeRate.service.ExchangeRateService;
@@ -34,19 +34,19 @@ public class ExchangeRateServiceImpl implements ExchangeRateService {
 		if(!exchangeRateData.isEmpty()) {
 			logger.info("getExchangeRates : Inserting data into table");
 			exchangeRatesRepository.saveAll(exchangeRateData);
-			return "Data inserted successfully !!";
+			return ExchangeRatesConstants.SAVE_MSG;
 		}
-		return "Data not recived from Echange API !!";
+		return ExchangeRatesConstants.N0_DATA_FOUND;
 	}
 	
 	public String getExchangeRatesByDate(String accessKey, String date) throws JsonProcessingException {
 		logger.info("ExchangeRateService : getExchangeRatesByDate");
-		boolean result = ExchangeRatesUtility.isDateValid(date, EchangeRatesConstants.DATE_FORMATE);
+		boolean result = ExchangeRatesUtility.isDateValid(date, ExchangeRatesConstants.DATE_FORMATE);
 		try {
 		if (result) {
-			String url = EchangeRatesConstants.BASE_URL + date + EchangeRatesConstants.ACCESS_KEY
-					+ accessKey + EchangeRatesConstants.BASE
-					+ EchangeRatesConstants.SYMBOL;
+			String url = ExchangeRatesConstants.BASE_URL + date + ExchangeRatesConstants.ACCESS_KEY
+					+ accessKey + ExchangeRatesConstants.BASE
+					+ ExchangeRatesConstants.SYMBOL;
 			RestTemplate rt = new RestTemplate();
 			ObjectMapper mapper = new ObjectMapper();
 			String json = rt.getForObject(url, String.class);
@@ -54,22 +54,22 @@ public class ExchangeRateServiceImpl implements ExchangeRateService {
 			if (exchangeRate != null && !exchangeRate.getDate().isEmpty()) {
 				logger.info("getExchangeRatesByDate : Inserting data into table");
 				exchangeRatesRepository.save(exchangeRate);
-				return "Data inserted successfully !!";
+				return ExchangeRatesConstants.SAVE_MSG;
 			}
 			else {
-				return "Data not recived from Echange API !!";
+				return ExchangeRatesConstants.N0_DATA_FOUND;
 			}
 		}
 		}catch(JsonProcessingException jpe) {
-			throw new CustomException("Unwanted data response from API call");
+			throw new CustomException(ExchangeRatesConstants.UNKNOW_RESPONSE);
 		}catch(HttpClientErrorException hce) {
-			throw new UnauthorizedException("You have supplied a Invalid API Access Key.");
+			throw new UnauthorizedException(ExchangeRatesConstants.INVALID_ACCESS_KEY);
 		}catch(ResourceAccessException rae) {
-			throw new CustomException("Intrnal Server is unavilable");
+			throw new CustomException(ExchangeRatesConstants.SERVER_ERROR);
 		}catch(Exception e) {
-			throw new CustomException("Somthing went wrong can you try after sometime");
+			throw new CustomException(ExchangeRatesConstants.BASE_ERROR);
 		}
-		return "Invalid Dateformate from user !!";
+		return ExchangeRatesConstants.INVALID_INPUT;
 	}
 	
 	public String getExchangeRatesData(String accessKey) throws JsonProcessingException {
@@ -78,60 +78,56 @@ public class ExchangeRateServiceImpl implements ExchangeRateService {
 		if(!exchangeRateData.isEmpty()) {
 			logger.info("getExchangeRates : Inserting data into table");
 			exchangeRatesRepository.saveAll(exchangeRateData);
-			return "Data inserted successfully !!";
+			return ExchangeRatesConstants.SAVE_MSG;
 		}
-		return "Data not recived from Echange API !!";
+		return ExchangeRatesConstants.N0_DATA_FOUND;
 	}
 	
 	public Object getExchangeRatesInfoByDate(String date) {
 		logger.info("ExchangeRateService : getExchangeRatesInfoByDate");
 		Object resultObject = null;
-		boolean result = ExchangeRatesUtility.isDateValid(date, EchangeRatesConstants.DATE_FORMATE);
+		boolean result = ExchangeRatesUtility.isDateValid(date, ExchangeRatesConstants.DATE_FORMATE);
 		if (result) {
 			ExchangeRate exchangeRate = exchangeRatesRepository.findByDate(date);
 			if (exchangeRate !=null && !exchangeRate.getDate().isEmpty()) {
 				resultObject = exchangeRate;
 			} else {
-				String error = "No Exchange Rate data found for this Date !!";
-				resultObject = error;
+				resultObject = ExchangeRatesConstants.N0_DATA_FOUND_DATE;
 			}
 		} else {
-			String error = "Invalid Dateformate from user !!";
-			resultObject = error;
+			resultObject = ExchangeRatesConstants.INVALID_INPUT;
 		}
 		return resultObject;
 	}
 
 	public List<Object> getExchangeRatesInBwtDates(String fromDate, String toDate) {
 		logger.info("ExchangeRateService : getExchangeRatesInfoByDate");
-		boolean result = ExchangeRatesUtility.isDateValid(fromDate, EchangeRatesConstants.DATE_FORMATE);
-		boolean result1 = ExchangeRatesUtility.isDateValid(toDate, EchangeRatesConstants.DATE_FORMATE);
+		boolean result = ExchangeRatesUtility.isDateValid(fromDate, ExchangeRatesConstants.DATE_FORMATE);
+		boolean result1 = ExchangeRatesUtility.isDateValid(toDate, ExchangeRatesConstants.DATE_FORMATE);
 		List<Object> exchangeRatesList = new ArrayList<>();
 		if(result&&result1){
 			exchangeRatesList = exchangeRatesRepository.findAllByDateBetween(fromDate, toDate);
 			String todayDate = ExchangeRatesUtility.getTodayDate();
-			logger.info(" getExchangeRatesInBwtDates todatDate"+todayDate);
 			ExchangeRate exchangeRate= exchangeRatesRepository.findByDate(todayDate);
 			if(!exchangeRatesList.isEmpty()) {
 				if(exchangeRate!= null && !exchangeRate.getDate().isEmpty()) {
 					exchangeRatesList.add(exchangeRate);
 				}
 				else {
-					exchangeRatesList.add("No Exchange Rate data found for today Date !!");
+					exchangeRatesList.add(ExchangeRatesConstants.N0_DATA_FOUND_DATE_TODAY);
 				}
 			}else {
 				if(exchangeRate!= null && !exchangeRate.getDate().isEmpty()) {
 					exchangeRatesList.add(exchangeRate);
-					exchangeRatesList.add("No Exchange Rate data found for in b/w Dates !!");
+					exchangeRatesList.add(ExchangeRatesConstants.N0_DATA_FOUND_BTW_DATES);
 				}
 				else {
-					exchangeRatesList.add("No Exchange Rate data found in b/w Dates and Today date !!");
+					exchangeRatesList.add(ExchangeRatesConstants.N0_DATA_FOUND_BTW_DATES_TODAY_DATE);
 				}
 			}
 			
 		}else {
-			String error = "Invalid Dateformate from user !!";
-			exchangeRatesList.add(error);
+			exchangeRatesList.add(ExchangeRatesConstants.INVALID_INPUT);
 		}
 		return exchangeRatesList;
 	}

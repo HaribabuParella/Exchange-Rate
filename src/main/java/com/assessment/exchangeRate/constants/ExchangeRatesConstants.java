@@ -1,6 +1,6 @@
 package com.assessment.exchangeRate.constants;
 
-public class EchangeRatesConstants {
+public class ExchangeRatesConstants {
 	public static final String URL2= "http://api.exchangeratesapi.io/v1/2020-11-01";
 	public static final String URL3= "http://api.exchangeratesapi.io/v1/2020-12-01";
 	public static final String URL4= "http://api.exchangeratesapi.io/v1/2021-01-01";
@@ -20,5 +20,15 @@ public class EchangeRatesConstants {
 	public static final String SYMBOL = "&symbols=GBP";
 	public static final String CURRENCY_SYMBOL = "&symbols=GBP,USD,HKD";
 	public static final String DATE_FORMATE = "yyyy-MM-dd";
-	
+	public static final String SAVE_MSG ="Data inserted successfully !!";
+	public static final String N0_DATA_FOUND = "Data not recived from Echange API !!";
+	public static final String INVALID_INPUT  = "Invalid Dateformate from user !!";
+	public static final String UNKNOW_RESPONSE  ="Unknow data response from API call";
+	public static final String INVALID_ACCESS_KEY  ="You have supplied a Invalid API Access Key !!";
+	public static final String SERVER_ERROR  ="Intrnal Server is unavilable !!";
+	public static final String BASE_ERROR  = "Somthing went wrong can you try after sometime !!";
+	public static final String N0_DATA_FOUND_DATE = "No Exchange Rate data found for this Date !!";
+	public static final String N0_DATA_FOUND_DATE_TODAY = "No Exchange Rate data found for today Date !!";
+	public static final String N0_DATA_FOUND_BTW_DATES ="No Exchange Rate data found for in b/w Dates !!";
+	public static final String N0_DATA_FOUND_BTW_DATES_TODAY_DATE  = "No Exchange Rate data found in b/w Dates and Today date !!";
 }

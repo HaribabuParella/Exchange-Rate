@@ -20,7 +20,7 @@ public class ExchangeRateController {
 	@Autowired
 	ExchangeRateService exchangeRateService;
 	
-	@GetMapping(value="/getExchangRates/{accessKey}")
+	@GetMapping(value="/get_Exchang_Rates/{accessKey}")
 	private String getExchangeRates(@PathVariable("accessKey") String accessKey) throws JsonProcessingException {
 		logger.info("ExchangeRateController : getExchangeRates Entry");
 		return exchangeRateService.getExchangeRates(accessKey);
