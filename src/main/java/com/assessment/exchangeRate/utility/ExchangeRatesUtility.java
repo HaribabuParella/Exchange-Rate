@@ -23,21 +23,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
- * @author Helo
+ * @author Haribabu Parella
  *
  */
-/**
- * @author Helo
- *
- */
-/**
- * @author Helo
- *
- */
-/**
- * @author Helo
- *
- */
+
 public class ExchangeRatesUtility {
 	
 	static Logger logger = LoggerFactory.getLogger(ExchangeRatesUtility.class);

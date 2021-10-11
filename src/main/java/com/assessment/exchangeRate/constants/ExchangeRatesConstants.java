@@ -5,6 +5,9 @@ package com.assessment.exchangeRate.constants;
  *
  */
 public class ExchangeRatesConstants {
+	private ExchangeRatesConstants() {
+		
+	}
 	public static final String URL2= "http://api.exchangeratesapi.io/v1/2020-11-01";
 	public static final String URL3= "http://api.exchangeratesapi.io/v1/2020-12-01";
 	public static final String URL4= "http://api.exchangeratesapi.io/v1/2021-01-01";
