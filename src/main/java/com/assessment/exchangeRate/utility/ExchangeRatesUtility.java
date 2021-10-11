@@ -22,6 +22,22 @@ import com.assessment.exchangeRate.model.ExchangeRate;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+/**
+ * @author Helo
+ *
+ */
+/**
+ * @author Helo
+ *
+ */
+/**
+ * @author Helo
+ *
+ */
+/**
+ * @author Helo
+ *
+ */
 public class ExchangeRatesUtility {
 	
 	static Logger logger = LoggerFactory.getLogger(ExchangeRatesUtility.class);
@@ -29,6 +45,9 @@ public class ExchangeRatesUtility {
 
 	}
 
+	/**
+	 * @return
+	 */
 	public static String getTodayDate() {
 		logger.info("ExchangeRatesUtility : getTodayDate");
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -36,6 +55,12 @@ public class ExchangeRatesUtility {
 		return dtf.format(now);
 	}
 	
+	
+	/**
+	 * @param dateString
+	 * @param pattern
+	 * @return
+	 */
 	public static boolean isDateValid(String dateString, String pattern)
 	{
 		boolean result = dateString.matches("^\\d+\\-\\d+\\-\\d+");
@@ -51,6 +76,10 @@ public class ExchangeRatesUtility {
 		return false;
 	}
 
+	/**
+	 * @param exchangeRateList
+	 * @return
+	 */
 	@SuppressWarnings("unlikely-arg-type")
 	public static List<ExchangeRate> filterExchangeRateListData(List<ExchangeRate> exchangeRateList) {
 		logger.info("ExchangeRatesUtility : filterExchangeRateListData");
@@ -62,6 +91,11 @@ public class ExchangeRatesUtility {
 				.collect(Collectors.toList());
 	}
 
+	/**
+	 * @param accessKey
+	 * @return
+	 * @throws JsonProcessingException
+	 */
 	public static List<ExchangeRate> getExchangeDataFromAPI(String accessKey) throws JsonProcessingException {
 		logger.info("getExchangeDatFromAPI");
 		List<ExchangeRate> exchangeRateList = new ArrayList<>();
@@ -140,6 +174,11 @@ public class ExchangeRatesUtility {
 		return exchangeRateList;
 	}
 
+	/**
+	 * @param accessKey
+	 * @return
+	 * @throws JsonProcessingException
+	 */
 	public static List<ExchangeRate> getExchangeRatesDataFromAPI(String accessKey) throws JsonProcessingException {
 		logger.info("getExchangeDatFromAPI");
 		List<ExchangeRate> exchangeRateList = new ArrayList<>();

@@ -12,39 +12,89 @@ import org.springframework.web.bind.annotation.RestController;
 import com.assessment.exchangeRate.service.ExchangeRateService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
+/**
+ * @author Haribabu Parella
+ * ExchangeRateController is the controller for Exchange Rate application
+ * If we got any request to application this class is the entry point for all the request
+ * Based on the request will send response back.
+ */
 @RestController
 public class ExchangeRateController {
-	
 	Logger logger = LoggerFactory.getLogger(ExchangeRateController.class);
 
 	@Autowired
 	ExchangeRateService exchangeRateService;
 	
-	@GetMapping(value="/get_Exchang_Rates/{accessKey}")
-	private String getExchangeRates(@PathVariable("accessKey") String accessKey) throws JsonProcessingException {
+	/**
+	 * This method received the request for GBP/USD/HKD currencies Exchange rate details
+	 * and it will call service layer and pull rates details from Exchange API and save 
+	 * details into H2 DB and sending response back to user.
+	 * 
+	 * @param accessKey
+	 * @return Success message response
+	 * @throws JsonProcessingException
+	 */
+	@GetMapping(value="/exchange_Rates_Data_Few_Currencies/{access_Key}")
+	private String getExchangeRates(@PathVariable("access_Key") String accessKey) throws JsonProcessingException {
 		logger.info("ExchangeRateController : getExchangeRates Entry");
 		return exchangeRateService.getExchangeRates(accessKey);
 	}
 	
-	@GetMapping(value="/getExchangeRatesByDate/{accessKey}/{date}")
+	/**
+	 * This method received the request for GBP currencies for particular date Exchange rate details
+	 * and it will call service layer and pull rates details for that date from Exchange API and save 
+	 * details into H2 DB and sending response back to user.
+	 * 
+	 * @param accessKey
+	 * @param date
+	 * @return Success message response
+	 * @throws JsonProcessingException
+	 */
+	@GetMapping(value="/exchange_Rates_By_Date/{accessKey}/{date}")
 	private String getExchangeRatesByDate(@PathVariable("accessKey") String accessKey,@PathVariable("date") String date) throws JsonProcessingException {
 		logger.info("ExchangeRateController : getExchangeRatesByDate Entry ");
 		return exchangeRateService.getExchangeRatesByDate(accessKey,date);
 	}
 	
-	@GetMapping(value="/getExchangeRatesData/{accessKey}")
+	/**
+	 * This method received the request for All currencies Exchange rate details
+	 * and it will call service layer and pull rates details Exchange API and save 
+	 * details into H2 DB and sending response back to user.
+	 * 
+	 * @param accessKey
+	 * @return Success message response
+	 * @throws JsonProcessingException
+	 */
+	@GetMapping(value="/exchange_Rates_Data_All_Currencies/{accessKey}")
 	private String getExchangeRatesData(@PathVariable("accessKey") String accessKey) throws JsonProcessingException {
 		logger.info("ExchangeRateController : getExchangeRatesData Entry");
 		return exchangeRateService.getExchangeRatesData(accessKey);
 	}
 	
-	@GetMapping(value="/getExchangeRatesInfoByDate/{date}")
+	/**
+	 * This method received the request for All currencies Exchange rate details for particular date
+	 * and it will call service layer and pull rates details from H2 DB and Display 
+	 * details into user console
+	 * 
+	 * @param date
+	 * @return Exchange Rates 
+	 */
+	@GetMapping(value="/exchange_Rates_Details_By_Date/{date}")
 	private Object getExchangeRatesInfoByDate(@PathVariable("date") String date) {
 		logger.info("ExchangeRateController : getExchangeRatesInfoByDate Entry ");
 		return exchangeRateService.getExchangeRatesInfoByDate(date);//2021-10-08
 	}
 	
-	@GetMapping(value="/getExchangeRatesInBwtDates/{fromDate}/{toDate}")
+	/**
+	 * This method received the request for All currencies Exchange rate details in between two
+	 * dates and it will call service layer and pull rates details from H2 DB and Display 
+	 * details into user console
+	 * 
+	 * @param fromDate
+	 * @param toDate
+	 * @return List of Exchange Rates
+	 */
+	@GetMapping(value="/exchange_Rates_In_Bwt_Dates/{fromDate}/{toDate}")
 	private List<Object> getExchangeRatesInBwtDates(@PathVariable("fromDate") String fromDate,@PathVariable("toDate") String toDate) {
 		logger.info("ExchangeRateController : getExchangeRatesInBwtDates Entry");
 		return exchangeRateService.getExchangeRatesInBwtDates(fromDate,toDate);//2021-10-08

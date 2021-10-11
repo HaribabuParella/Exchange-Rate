@@ -1,5 +1,9 @@
 package com.assessment.exchangeRate.constants;
 
+/**
+ * @author Haribabu Parella
+ *
+ */
 public class ExchangeRatesConstants {
 	public static final String URL2= "http://api.exchangeratesapi.io/v1/2020-11-01";
 	public static final String URL3= "http://api.exchangeratesapi.io/v1/2020-12-01";

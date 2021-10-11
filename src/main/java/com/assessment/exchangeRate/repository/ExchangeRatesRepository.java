@@ -9,9 +9,23 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import com.assessment.exchangeRate.model.ExchangeRate;
 
+/**
+ * From this call will call DB and do DB operations 
+ * @author Haribabu Parella
+ *
+ */
 @Repository
 public interface ExchangeRatesRepository extends JpaRepository<ExchangeRate, Integer>{
-	 ExchangeRate findByDate(@Param("date") String date);
+	 /**
+	 * @param date
+	 * @return
+	 */
+	ExchangeRate findByDate(@Param("date") String date);
 	 
-	 List<Object> findAllByDateBetween(String fromDate,String toDate);
+	 /**
+	 * @param fromDate
+	 * @param toDate
+	 * @return
+	 */
+	List<Object> findAllByDateBetween(String fromDate,String toDate);
 }

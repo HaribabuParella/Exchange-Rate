@@ -21,6 +21,12 @@ import com.assessment.exchangeRate.utility.ExchangeRatesUtility;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+/**This Service class it have business logic to call the Exchange Rate APi with help of 
+ * RestTemplate and will have data into H2 DB and will get data from H2 DB and send to Controller 
+ * To display data to user
+ * @author Haribabu Parella
+ *
+ */
 @Service
 public class ExchangeRateServiceImpl implements ExchangeRateService {
 	Logger logger = LoggerFactory.getLogger(ExchangeRateServiceImpl.class);
@@ -28,6 +34,11 @@ public class ExchangeRateServiceImpl implements ExchangeRateService {
 	@Autowired
 	ExchangeRatesRepository exchangeRatesRepository;
 
+	/**
+	 * This method received the request for GBP/USD/HKD currencies Exchange rate details 
+	 * from controller and will call Exchange API and get Exchange rate details and save 
+	 * details into H2 DB and sending response back user.
+	 */
 	public String getExchangeRates(String accessKey) throws JsonProcessingException {
 		logger.info("ExchangeRateService : getExchangeRates");
 		List<ExchangeRate> exchangeRateData = ExchangeRatesUtility.getExchangeDataFromAPI(accessKey);
@@ -39,6 +50,11 @@ public class ExchangeRateServiceImpl implements ExchangeRateService {
 		return ExchangeRatesConstants.N0_DATA_FOUND;
 	}
 	
+	/**
+	 * This method received the request for GBP currencies for particular date of Exchange rate details
+	 * from controller and it will call Exchange API and get Exchange Rates details for particular date 
+	 * and save details into H2 DB and sending response back to user.
+	 */
 	public String getExchangeRatesByDate(String accessKey, String date) throws JsonProcessingException {
 		logger.info("ExchangeRateService : getExchangeRatesByDate");
 		boolean result = ExchangeRatesUtility.isDateValid(date, ExchangeRatesConstants.DATE_FORMATE);
@@ -72,6 +88,11 @@ public class ExchangeRateServiceImpl implements ExchangeRateService {
 		return ExchangeRatesConstants.INVALID_INPUT;
 	}
 	
+	/**
+	 * This method received the request for All currencies Exchange rate details from
+	 * Controller and it will call Exchange API and pull the Rate details and save 
+	 * details into H2 DB and sending response back to user.
+	 */
 	public String getExchangeRatesData(String accessKey) throws JsonProcessingException {
 		logger.info("ExchangeRateService : getExchangeRatesData");
 		List<ExchangeRate> exchangeRateData = ExchangeRatesUtility.getExchangeRatesDataFromAPI(accessKey);
@@ -83,6 +104,11 @@ public class ExchangeRateServiceImpl implements ExchangeRateService {
 		return ExchangeRatesConstants.N0_DATA_FOUND;
 	}
 	
+	/**
+	 *This method received the request for All currencies Exchange rate details for particular date
+	 * from controller and it will call H2 DB and pull the details from DB and send details
+	 * back to Controller to Display details into user console
+	 */
 	public Object getExchangeRatesInfoByDate(String date) {
 		logger.info("ExchangeRateService : getExchangeRatesInfoByDate");
 		Object resultObject = null;
@@ -100,6 +126,11 @@ public class ExchangeRateServiceImpl implements ExchangeRateService {
 		return resultObject;
 	}
 
+	/**
+	 * This method received the request for All currencies Exchange rate details in between two
+	 * dates from controller and it will call H2 DB and pull the details from DB and send details
+	 * back to Controller to Display details into user console
+	 */
 	public List<Object> getExchangeRatesInBwtDates(String fromDate, String toDate) {
 		logger.info("ExchangeRateService : getExchangeRatesInfoByDate");
 		boolean result = ExchangeRatesUtility.isDateValid(fromDate, ExchangeRatesConstants.DATE_FORMATE);

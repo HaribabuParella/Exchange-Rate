@@ -12,6 +12,10 @@ import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+/**
+ * @author Haribabu Parella
+ *
+ */
 @Entity
 @Table(name = "EXCHANGE_RATES", schema = "PUBLIC")
 public class ExchangeRate {
