@@ -2,7 +2,6 @@ package com.assessment.exchangeRate.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
-
 import com.assessment.exchangeRate.Exceptions.CustomException;
 import com.assessment.exchangeRate.Exceptions.UnauthorizedException;
 import com.assessment.exchangeRate.constants.ExchangeRatesConstants;
@@ -66,7 +64,7 @@ public class ExchangeRateServiceImpl implements ExchangeRateService {
 			RestTemplate rt = new RestTemplate();
 			ObjectMapper mapper = new ObjectMapper();
 			String json = rt.getForObject(url, String.class);
-			ExchangeRate exchangeRate = mapper.reader().forType(ExchangeRate.class).readValue(json);
+			ExchangeRate exchangeRate = mapper.readValue(json, ExchangeRate.class);
 			if (exchangeRate != null && !exchangeRate.getDate().isEmpty()) {
 				logger.info("getExchangeRatesByDate : Inserting data into table");
 				exchangeRatesRepository.save(exchangeRate);
