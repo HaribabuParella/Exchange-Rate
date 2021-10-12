@@ -180,8 +180,9 @@ class ExchangeRatesServiceImplMockTest {
 		try (MockedStatic<ExchangeRatesUtility> mocked = mockStatic(ExchangeRatesUtility.class)) {
 			mocked.when(() -> ExchangeRatesUtility.isDateValid(Mockito.anyString(),Mockito.anyString())).thenReturn(true);
 			Mockito.when(exchangeRatesRepository.findAllByDateBetween(anyString(),anyString())).thenReturn(exchangeRateList);
-			String result = exchangeRateService.getExchangeRatesByDate(ExchangeRatesConstants.ACCESS_KEY_VALUE, Mockito.anyString());
-			assertEquals(ExchangeRatesConstants.N0_DATA_FOUND, result);
+			Mockito.when(exchangeRatesRepository.findByDate(anyString())).thenReturn(exchangeRate);
+			List<Object> result = exchangeRateService.getExchangeRatesInBwtDates("2021-01-01","2021-10-01");
+			assertNotNull(result);
 		}
 		
 	}
@@ -189,19 +190,13 @@ class ExchangeRatesServiceImplMockTest {
 	@Test
 	void getExchangeRatesInBwtDatesWithoutData() throws Exception {
 		ExchangeRate exchangeRate = new ExchangeRate();
-		exchangeRate.setBase("EUR");
-		exchangeRate.setDate("2021-10-01");
-		exchangeRate.setHistorical("true");
-		exchangeRate.setSuccess("true");
-		exchangeRate.setTimestamp("564687465");
-		String reponse = "[{\"success\":\"true\",\"timestamp\":\"564687465\",\"historical\":\"true\",\"base\":\"EUR\",\"date\":\"2021-10-01\",\"rates\":{\"GBP\":0.853913}}]";
+		List<Object> exchangeRateList = new ArrayList<>();
 		try (MockedStatic<ExchangeRatesUtility> mocked = mockStatic(ExchangeRatesUtility.class)) {
 			mocked.when(() -> ExchangeRatesUtility.isDateValid(Mockito.anyString(),Mockito.anyString())).thenReturn(true);
-			Mockito.when(restTemplate.getForObject(Mockito.anyString(), eq(String.class))).thenReturn(reponse);
-			Mockito.when(objectMapper.readValue(Mockito.anyString(), eq(ExchangeRate.class))).thenReturn(exchangeRate);
-			Mockito.when(exchangeRatesRepository.save(exchangeRate)).thenReturn(exchangeRate);
-			String result = exchangeRateService.getExchangeRatesByDate(ExchangeRatesConstants.ACCESS_KEY_VALUE, Mockito.anyString());
-			assertEquals(ExchangeRatesConstants.N0_DATA_FOUND, result);
+			Mockito.when(exchangeRatesRepository.findAllByDateBetween(anyString(),anyString())).thenReturn(exchangeRateList);
+			Mockito.when(exchangeRatesRepository.findByDate(anyString())).thenReturn(exchangeRate);
+			List<Object> result =exchangeRateService.getExchangeRatesInBwtDates("2021-01-01","2021-10-01");
+			assertNotNull(result);
 		}
 		
 	}
