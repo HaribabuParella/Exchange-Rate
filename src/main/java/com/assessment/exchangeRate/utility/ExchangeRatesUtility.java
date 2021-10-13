@@ -62,7 +62,18 @@ public class ExchangeRatesUtility {
 		}
 		return false;
 	}
+	
+	/*@SuppressWarnings("unlikely-arg-type")
+	public static List<ExchangeRate> filterExchangeRateListData(List<ExchangeRate> exchangeRateList) {
+		logger.info("ExchangeRatesUtility : filterExchangeRateListData");
+		List<ExchangeRate> exchangeRateList1 = exchangeRateList.stream()
+				.filter(a -> a.getDate().substring(8, 10).contains("01")).collect(Collectors.toList());
+		List<String> wordsList = Arrays.asList("GBP", "USD", "HKD ");
 
+		return exchangeRateList1.stream().filter(a -> a.getRates().entrySet().containsAll(wordsList))
+				.collect(Collectors.toList());
+	}*/
+	
 	/**
 	 * @param accessKey
 	 * @return
